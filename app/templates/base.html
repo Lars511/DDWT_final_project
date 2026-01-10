@@ -11,8 +11,13 @@
     <a href="/">Home</a>
     <a href="/activities">Activities</a>
     <a href="/categories">Categories</a>
-    <a href="/login">Login</a>
-    <a href="/register">Register</a>
+    
+    {% if current_user.is_anonymous %}
+      <a href="{{ url_for('login') }}">Login</a>
+      <a href="/register">Register</a>
+      {% else %}
+      <a href="{{ url_for('logout') }}">Logout</a>
+      {% endif %}
 </nav>
 
 <main>
