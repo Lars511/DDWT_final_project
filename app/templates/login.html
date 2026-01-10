@@ -1,8 +1,38 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Login</h1>
-<p>This page will allow users to log in to their account.</p>
+    <h1>Sign In</h1>
 
-<!-- login form -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <p style="color: red;">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    
+    <form action="" method="post" novalidate class="signin">
+        {{ form.hidden_tag() }}
+        <p>
+            Username<br>
+            {{ form.username(size=32) }}
+            {% for error in form.username.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.password.label }}<br>
+            {{ form.password(size=32) }}
+            {% for error in form.password.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
+        <p>{{ form.submit() }}</p>
+
+        <br><p>
+            New User? <a href="{{ url_for('register') }}">Click to Register!</a>
+        </p>
+    </form>
 {% endblock %}
