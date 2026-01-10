@@ -21,7 +21,7 @@ from app.models import Activity
 
 @app.route('/', methods=['GET'])
 @app.route('/index')
-#@login_required
+@login_required
 def index():
     return render_template('index.html')
 
@@ -64,21 +64,21 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
+
 @app.route("/activities")
-#@login_required
-@app.route("/activities")
+@login_required
 def activities():
     activities = Activity.query.all()
     return render_template("activities.html", activities=activities)
 
 @app.route("/activities/create")
-#@login_required
+@login_required
 def create_activity():
     return render_template("create_activity.html")
 
 
 @app.route("/categories")
-#@login_required
+@login_required
 def categories():
     return render_template("categories.html")
 
