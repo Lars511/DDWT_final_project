@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Edit Activity</h1>
+
+<form method="POST">
+
+    <label>Title</label><br>
+    <input type="text" name="title" value="{{ activity.title }}" required><br><br>
+
+    <label>Description</label><br>
+    <textarea name="description">{{ activity.description }}</textarea><br><br>
+
+    <label>Location</label><br>
+    <input type="text" name="location" value="{{ activity.location }}" required><br><br>
+
+    <label>Date</label><br>
+    <input type="date" name="activity_date"
+           value="{{ activity.activity_date }}" required><br><br>
+
+    <label>Time</label><br>
+    <input type="time" name="activity_time"
+           value="{{ activity.activity_time }}" required><br><br>
+
+    <label>Max participants</label><br>
+    <input type="number" name="max_participants"
+           value="{{ activity.max_participants }}" min="1"><br><br>
+
+    <label>Category</label><br>
+    <select name="category_id" required>
+        {% for category in categories %}
+            <option value="{{ category.id }}"
+                {% if category.id == activity.category_id %}selected{% endif %}>
+                {{ category.name }}
+            </option>
+        {% endfor %}
+    </select><br><br>
+
+    <button type="submit">Update Activity</button>
+
+</form>
+
+{% endblock %}

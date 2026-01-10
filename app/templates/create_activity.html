@@ -1,10 +1,39 @@
 {% extends "base.html" %}
-
 {% block content %}
-<h1>Create Activity</h1>
-<p>
-    This page will allow users to create a new activity.
-</p>
 
-<!-- create activity form -->
+<h1>Create Activity</h1>
+
+<form method="POST">
+
+    <label>Title</label><br>
+    <input type="text" name="title" required><br><br>
+
+    <label>Description</label><br>
+    <textarea name="description"></textarea><br><br>
+
+    <label>Location</label><br>
+    <input type="text" name="location" required><br><br>
+
+    <label>Date</label><br>
+    <input type="date" name="activity_date" required><br><br>
+
+    <label>Time</label><br>
+    <input type="time" name="activity_time" required><br><br>
+
+    <label>Max participants</label><br>
+    <input type="number" name="max_participants" value="10" min="1"><br><br>
+
+    <label>Category</label><br>
+    <select name="category_id" required>
+        {% for category in categories %}
+            <option value="{{ category.id }}">
+                {{ category.name }}
+            </option>
+        {% endfor %}
+    </select><br><br>
+
+    <button type="submit">Create Activity</button>
+
+</form>
+
 {% endblock %}
