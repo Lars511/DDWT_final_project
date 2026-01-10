@@ -17,12 +17,14 @@ class Users(UserMixin, db.Model):
     __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer, primary_key = True)
     username = db.Column(db.String(64), unique=True, nullable=False)
-    email = db.Column(db.String(128), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
 
+    """
+    For creation of the API token
     token: so.Mapped[Optional[str]] = so.mapped_column(
         sa.String(32), index=True, unique=True)
     token_expiration: so.Mapped[Optional[datetime]]
+    """
 
     # Password hashing
     def set_password(self, password):
