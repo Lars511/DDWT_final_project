@@ -17,6 +17,7 @@ from app.forms import LoginForm, SignUpForm
 from app.models import Users
 import sqlalchemy as sa
 from urllib.parse import urlsplit
+from app.models import Activity
 
 @app.route('/', methods=['GET'])
 @app.route('/index')
@@ -65,9 +66,10 @@ def register():
 
 @app.route("/activities")
 #@login_required
+@app.route("/activities")
 def activities():
-    return render_template("activities.html")
-
+    activities = Activity.query.all()
+    return render_template("activities.html", activities=activities)
 
 @app.route("/activities/create")
 #@login_required

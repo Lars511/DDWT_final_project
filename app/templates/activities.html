@@ -2,9 +2,36 @@
 
 {% block content %}
 <h1>Activities</h1>
-<p>
-    This page will display a list of available activities that users can join.
-</p>
 
-<!-- dynamic list of activities -->
+{% if activities %}
+<table border="1" cellpadding="8" cellspacing="0">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Location</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Category ID</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for activity in activities %}
+        <tr>
+            <td>{{ activity.id }}</td>
+            <td>{{ activity.title }}</td>
+            <td>{{ activity.description }}</td>
+            <td>{{ activity.location }}</td>
+            <td>{{ activity.activity_date }}</td>
+            <td>{{ activity.activity_time }}</td>
+            <td>{{ activity.category_id }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No activities found.</p>
+{% endif %}
+
 {% endblock %}
