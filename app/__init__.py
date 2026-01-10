@@ -19,7 +19,7 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
 # Configure SQLite database
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+os.path.join(
-    basedir, 'instance/movies.db')
+    basedir, 'instance/activities.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initialize the database
