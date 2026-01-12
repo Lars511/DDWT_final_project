@@ -50,8 +50,29 @@ class Category(db.Model):
     description = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
 
+    # Relationship to activity types
+    activity_types = db.relationship('ActivityType', backref='category', lazy='dynamic')
+
     def __repr__(self):
         return f'<Category {self.name}>'
+
+
+class ActivityType(db.Model):
+    """Activity type model for specific activity types within categories"""
+    __tablename__ = 'activity_types'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+
+    # Ensure unique activity type names within each category
+    __table_args__ = (
+        db.UniqueConstraint('name', 'category_id', name='unique_type_per_category'),
+    )
+
+    def __repr__(self):
+        return f'<ActivityType {self.name}>'
 
 
 class Activity(db.Model):
@@ -69,6 +90,7 @@ class Activity(db.Model):
     # Foreign Keys
     creator_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=False)
+    activity_type_id = db.Column(db.Integer, db.ForeignKey('activity_types.id'), nullable=False)
 
     # Metadata
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
@@ -84,6 +106,10 @@ class Activity(db.Model):
     def get_category(self):
         """Get the category object"""
         return Category.query.get(self.category_id)
+
+    def get_activity_type(self):
+        """Get the activity type object"""
+        return ActivityType.query.get(self.activity_type_id)
 
     def get_participant_count(self):
         """Get current number of participants"""

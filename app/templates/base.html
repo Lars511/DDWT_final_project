@@ -11,7 +11,7 @@
     <a href="/">Home</a>
     <a href="/activities">Activities</a>
     <a href="/categories">Categories</a>
-    
+
     {% if current_user.is_anonymous %}
       <a href="{{ url_for('login') }}">Login</a>
       <a href="/register">Register</a>

@@ -5,13 +5,9 @@ Setting up the routes for the html pages
 from flask import render_template, flash, redirect, request, url_for, jsonify
 from flask_login import current_user, login_user, logout_user, login_required
 from app import db, app
-<<<<<<< HEAD
-from app.forms import LoginForm, SignUpForm
-from app.models import Users, Activity, Category, ActivityType
-=======
 from app.forms import LoginForm, SignUpForm, EditProfile
 from app.models import Users, Activity, Category
->>>>>>> d539fc69c459ca24ce183e96eb436950e1ba0464
+from app.models import ActivityType
 import sqlalchemy as sa
 from urllib.parse import urlsplit
 from datetime import date, time
@@ -37,7 +33,7 @@ def login():
             sa.select(Users).where(Users.email == form.email.data)
         )
         if user is None or not user.check_password(form.password.data):
-            flash('Invalid username or password')
+            flash('Invalid email or password')
             return redirect(url_for('login'))
 
         login_user(user, remember=form.remember_me.data)
@@ -66,12 +62,7 @@ def register():
 
     form = SignUpForm()
     if form.validate_on_submit():
-<<<<<<< HEAD
-        # Adjust based on whether your form has email or not
-        user = Users(username=form.username.data)
-=======
         user = Users(username=form.username.data, email=form.email.data)
->>>>>>> d539fc69c459ca24ce183e96eb436950e1ba0464
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
@@ -98,11 +89,11 @@ def edit_profile():
         db.session.commit()
         flash('Profile updated succesfully!')
         return redirect(url_for('profile'))
-    
+
     elif request.method == 'GET':
         form.email.data = current_user.email
         form.bio.data = current_user.bio
-    
+
     return render_template('edit_profile.html', form=form)
 
 # READ ACTIVITIES
