@@ -2,7 +2,7 @@
 Setting up the routes for the html pages
 """
 
-from flask import render_template, flash, redirect, request, url_for
+from flask import render_template, flash, redirect, request, url_for, jsonify
 from flask_login import current_user, login_user, logout_user, login_required
 from app import db, app
 from app.forms import LoginForm, SignUpForm
@@ -29,7 +29,7 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = db.session.scalar(
-            sa.select(Users).where(Users.username == form.username.data)
+            sa.select(Users).where(Users.email == form.email.data)
         )
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
@@ -61,6 +61,7 @@ def register():
 
     form = SignUpForm()
     if form.validate_on_submit():
+        # Adjust based on whether your form has email or not
         user = Users(username=form.username.data)
         user.set_password(form.password.data)
         db.session.add(user)
@@ -79,6 +80,7 @@ def activities():
     return render_template("activities.html", activities=activities)
 
 
+# CREATE ACTIVITY
 @app.route("/activities/create", methods=["GET", "POST"])
 @login_required
 def create_activity():
@@ -107,6 +109,7 @@ def create_activity():
         categories=categories,
         activity_types=activity_types
     )
+
 
 # EDIT ACTIVITY (GET + POST)
 @app.route("/activities/<int:id>/edit", methods=["GET", "POST"])
@@ -138,7 +141,6 @@ def edit_activity(id):
     )
 
 
-
 # DELETE ACTIVITY
 @app.route("/activities/<int:id>/delete", methods=["POST"])
 @login_required
@@ -162,7 +164,6 @@ def categories():
 @login_required
 def get_activity_types(category_id):
     """API endpoint to get activity types for a specific category"""
-    from flask import jsonify
     activity_types = ActivityType.query.filter_by(category_id=category_id).all()
     return jsonify([
         {"id": at.id, "name": at.name}
