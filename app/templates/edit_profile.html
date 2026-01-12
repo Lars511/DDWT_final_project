@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content%}
+<form action="", method="POST" id="edit_profile">
+    {{ form.hidden_tag() }}
+    <p>
+        Email<br>
+        {{form.email.label}}{{ form.email(size=32) }}
+    </p>
+
+    <p>
+        Bio <br>
+        {{form.bio.label}}{{form.bio(size=64)}}
+    </p>
+
+    <p>{{ form.submit() }}</p>
+
+{% endblock%}
+
