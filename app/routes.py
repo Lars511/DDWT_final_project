@@ -2,11 +2,16 @@
 Setting up the routes for the html pages
 """
 
-from flask import render_template, flash, redirect, request, url_for
+from flask import render_template, flash, redirect, request, url_for, jsonify
 from flask_login import current_user, login_user, logout_user, login_required
 from app import db, app
+<<<<<<< HEAD
+from app.forms import LoginForm, SignUpForm
+from app.models import Users, Activity, Category, ActivityType
+=======
 from app.forms import LoginForm, SignUpForm, EditProfile
 from app.models import Users, Activity, Category
+>>>>>>> d539fc69c459ca24ce183e96eb436950e1ba0464
 import sqlalchemy as sa
 from urllib.parse import urlsplit
 from datetime import date, time
@@ -61,7 +66,12 @@ def register():
 
     form = SignUpForm()
     if form.validate_on_submit():
+<<<<<<< HEAD
+        # Adjust based on whether your form has email or not
+        user = Users(username=form.username.data)
+=======
         user = Users(username=form.username.data, email=form.email.data)
+>>>>>>> d539fc69c459ca24ce183e96eb436950e1ba0464
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
@@ -103,10 +113,12 @@ def activities():
     return render_template("activities.html", activities=activities)
 
 
+# CREATE ACTIVITY
 @app.route("/activities/create", methods=["GET", "POST"])
 @login_required
 def create_activity():
     categories = Category.query.all()
+    activity_types = ActivityType.query.all()
 
     if request.method == "POST":
         activity = Activity(
@@ -117,6 +129,7 @@ def create_activity():
             activity_time=time.fromisoformat(request.form["activity_time"]),
             max_participants=int(request.form["max_participants"]),
             category_id=int(request.form["category_id"]),
+            activity_type_id=int(request.form["activity_type_id"]),
             creator_id = current_user.id
         )
         db.session.add(activity)
@@ -126,8 +139,10 @@ def create_activity():
 
     return render_template(
         "create_activity.html",
-        categories=categories
+        categories=categories,
+        activity_types=activity_types
     )
+
 
 # EDIT ACTIVITY (GET + POST)
 @app.route("/activities/<int:id>/edit", methods=["GET", "POST"])
@@ -135,6 +150,7 @@ def create_activity():
 def edit_activity(id):
     activity = Activity.query.get_or_404(id)
     categories = Category.query.all()
+    activity_types = ActivityType.query.all()
 
     if request.method == "POST":
         activity.title = request.form["title"]
@@ -144,6 +160,7 @@ def edit_activity(id):
         activity.activity_time = time.fromisoformat(request.form["activity_time"])
         activity.max_participants = int(request.form["max_participants"])
         activity.category_id = int(request.form["category_id"])
+        activity.activity_type_id = int(request.form["activity_type_id"])
 
         db.session.commit()
         flash("Activity updated successfully!")
@@ -152,9 +169,9 @@ def edit_activity(id):
     return render_template(
         "edit_activity.html",
         activity=activity,
-        categories=categories
+        categories=categories,
+        activity_types=activity_types
     )
-
 
 
 # DELETE ACTIVITY
@@ -173,6 +190,18 @@ def delete_activity(id):
 @login_required
 def categories():
     return render_template("categories.html")
+
+
+# API: Get activity types by category
+@app.route("/api/activity-types/<int:category_id>")
+@login_required
+def get_activity_types(category_id):
+    """API endpoint to get activity types for a specific category"""
+    activity_types = ActivityType.query.filter_by(category_id=category_id).all()
+    return jsonify([
+        {"id": at.id, "name": at.name}
+        for at in activity_types
+    ])
 
 
 # ERROR
