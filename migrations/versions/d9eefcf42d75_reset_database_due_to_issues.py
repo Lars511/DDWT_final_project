@@ -1,8 +1,8 @@
-"""Added email to user model
+"""reset database due to issues
 
-Revision ID: f20157695141
+Revision ID: d9eefcf42d75
 Revises: 
-Create Date: 2026-01-12 15:03:08.222495
+Create Date: 2026-01-12 17:28:13.286034
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'f20157695141'
+revision = 'd9eefcf42d75'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -30,6 +30,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('email', sa.String(length=64), nullable=False),
     sa.Column('username', sa.String(length=64), nullable=False),
+    sa.Column('bio', sa.String(length=256), nullable=True),
     sa.Column('password_hash', sa.String(length=128), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email'),
