@@ -5,6 +5,7 @@ from app import db
 from app.models import Users
 import sqlalchemy as sa
 from wtforms.validators import ValidationError, DataRequired, EqualTo, Email
+from flask_login import current_user
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired()])
@@ -39,7 +40,9 @@ class EditProfile(FlaskForm):
     submit = SubmitField('Save')
 
     def validate_email(self, email):
-        user = db.session.scalar(sa.select(Users).where(
-            Users.email == email.data))
-        if user is not None:
-            raise ValidationError('Please use a different email address.')
+        # Checks if the email is not taken and different from the current one
+        if email.data != current_user.email:
+            user = db.session.scalar(sa.select(Users).where(
+                Users.email == email.data))
+            if user is not None:
+                raise ValidationError('Please use a different email address.')
