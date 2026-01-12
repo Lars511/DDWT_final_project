@@ -37,3 +37,9 @@ class EditProfile(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     bio = StringField('Bio')
     submit = SubmitField('Save')
+
+    def validate_email(self, email):
+        user = db.session.scalar(sa.select(Users).where(
+            Users.email == email.data))
+        if user is not None:
+            raise ValidationError('Please use a different email address.')
