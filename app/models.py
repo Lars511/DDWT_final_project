@@ -18,6 +18,7 @@ class Users(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key = True)
     email = db.Column(db.String(64), unique=True, nullable=False)
     username = db.Column(db.String(64), unique=True, nullable=False)
+    bio = db.Column(db.String(256))
     password_hash = db.Column(db.String(128), nullable=False)
 
     """

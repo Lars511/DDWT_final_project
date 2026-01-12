@@ -5,8 +5,13 @@ Setting up the routes for the html pages
 from flask import render_template, flash, redirect, request, url_for, jsonify
 from flask_login import current_user, login_user, logout_user, login_required
 from app import db, app
+<<<<<<< HEAD
 from app.forms import LoginForm, SignUpForm
 from app.models import Users, Activity, Category, ActivityType
+=======
+from app.forms import LoginForm, SignUpForm, EditProfile
+from app.models import Users, Activity, Category
+>>>>>>> d539fc69c459ca24ce183e96eb436950e1ba0464
 import sqlalchemy as sa
 from urllib.parse import urlsplit
 from datetime import date, time
@@ -61,8 +66,12 @@ def register():
 
     form = SignUpForm()
     if form.validate_on_submit():
+<<<<<<< HEAD
         # Adjust based on whether your form has email or not
         user = Users(username=form.username.data)
+=======
+        user = Users(username=form.username.data, email=form.email.data)
+>>>>>>> d539fc69c459ca24ce183e96eb436950e1ba0464
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
@@ -71,6 +80,30 @@ def register():
 
     return render_template('register.html', title='Register', form=form)
 
+# PROFILE
+@app.route('/profile', methods=['GET', 'POST'])
+@login_required
+def profile():
+    return render_template('profile.html')
+
+# EDIT PROFILE
+@app.route('/edit_profile', methods=['GET', 'POST'])
+@login_required
+def edit_profile():
+    form = EditProfile()
+
+    if form.validate_on_submit():
+        current_user.email = form.email.data
+        current_user.bio = form.bio.data
+        db.session.commit()
+        flash('Profile updated succesfully!')
+        return redirect(url_for('profile'))
+    
+    elif request.method == 'GET':
+        form.email.data = current_user.email
+        form.bio.data = current_user.bio
+    
+    return render_template('edit_profile.html', form=form)
 
 # READ ACTIVITIES
 @app.route("/activities")
