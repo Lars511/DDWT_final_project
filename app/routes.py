@@ -29,7 +29,7 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = db.session.scalar(
-            sa.select(Users).where(Users.username == form.username.data)
+            sa.select(Users).where(Users.email == form.email.data)
         )
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
@@ -61,7 +61,7 @@ def register():
 
     form = SignUpForm()
     if form.validate_on_submit():
-        user = Users(username=form.username.data)
+        user = Users(username=form.username.data, email=form.email.data)
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
