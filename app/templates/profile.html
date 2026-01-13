@@ -4,15 +4,6 @@
 
 <h1>Hi, {{ current_user.username }}!</h1>
 
-
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    {% for message in messages %}
-      <p style="color: green;">{{ message }}</p>
-    {% endfor %}
-  {% endif %}
-{% endwith %}
-
 <p> Username: {{current_user.username}}</p>
 <p> Email: {{current_user.email}} </p>
 <p> About me: {{current_user.bio}}</p>
