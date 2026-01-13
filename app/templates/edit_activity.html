@@ -4,6 +4,20 @@
 <h1>Edit Activity</h1>
 
 <form method="POST">
+    <label>Category</label><br>
+    <select name="category_id" id="category_id" required>
+        <option value="">Select a category</option>
+        {% for category in categories %}
+            <option value="{{ category.id }}">
+                {{ category.name }}
+            </option>
+        {% endfor %}
+    </select><br><br>
+
+    <label>Activity Type</label><br>
+    <select name="activity_type_id" id="activity_type_id" required>
+        <option value="">Select a category first</option>
+    </select><br><br>
 
     <label>Title</label><br>
     <input type="text" name="title" value="{{ activity.title }}" required><br><br>
@@ -26,18 +40,40 @@
     <input type="number" name="max_participants"
            value="{{ activity.max_participants }}" min="1"><br><br>
 
-    <label>Category</label><br>
-    <select name="category_id" required>
-        {% for category in categories %}
-            <option value="{{ category.id }}"
-                {% if category.id == activity.category_id %}selected{% endif %}>
-                {{ category.name }}
-            </option>
-        {% endfor %}
-    </select><br><br>
 
     <button type="submit">Update Activity</button>
 
 </form>
+<script>
+    // Load activity types when category changes
+    document.getElementById('category_id').addEventListener('change', function() {
+        const categoryId = this.value;
+        const activityTypeSelect = document.getElementById('activity_type_id');
+
+        // Clear current options
+        activityTypeSelect.innerHTML = '<option value="">Loading...</option>';
+
+        if (categoryId) {
+            // Fetch activity types for this category
+            fetch(`/api/activity-types/${categoryId}`)
+                .then(response => response.json())
+                .then(data => {
+                    activityTypeSelect.innerHTML = '<option value="">Select activity type</option>';
+                    data.forEach(type => {
+                        const option = document.createElement('option');
+                        option.value = type.id;
+                        option.textContent = type.name;
+                        activityTypeSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading activity types:', error);
+                    activityTypeSelect.innerHTML = '<option value="">Error loading types</option>';
+                });
+        } else {
+            activityTypeSelect.innerHTML = '<option value="">Select a category first</option>';
+        }
+    });
+</script>
 
 {% endblock %}

@@ -177,9 +177,10 @@ def delete_activity(id):
 
 # CATEGORIES
 @app.route("/categories")
-@login_required
 def categories():
-    return render_template("categories.html")
+    categories = Category.query.all()
+    return render_template("categories.html", categories=categories)
+
 
 
 # API: Get activity types by category
@@ -193,6 +194,15 @@ def get_activity_types(category_id):
         for at in activity_types
     ])
 
+@app.route("/categories/<int:id>")
+def category_detail(id):
+    category = Category.query.get_or_404(id)
+    activity_types = ActivityType.query.filter_by(category_id=id).all()
+    return render_template(
+        "category_detail.html",
+        category=category,
+        activity_types=activity_types
+    )
 
 # ERROR
 @app.route("/error")

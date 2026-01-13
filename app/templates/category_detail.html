@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>{{ category.name }}</h1>
+
+{% if category.description %}
+<p>{{ category.description }}</p>
+{% endif %}
+
+<h2>Associated activity types</h2>
+
+{% if activity_types %}
+<ul>
+    {% for activity_type in activity_types %}
+        <li>{{ activity_type.name }}</li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No activity types available for this category.</p>
+{% endif %}
+
+<p>
+    <a href="{{ url_for('categories') }}">← Back to categories</a>
+</p>
+
+{% endblock %}

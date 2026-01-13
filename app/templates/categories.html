@@ -1,10 +1,16 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Categories</h1>
-<p>
-    This page shows the available activity categories.
-</p>
 
-<!-- category list -->
+<h1>Categories</h1>
+
+{% for category in categories %}
+    <p>
+        <a href="{{ url_for('category_detail', id=category.id) }}">
+            {{ category.name }}
+        </a>
+    </p>
+
+{% endfor %}
+
 {% endblock %}
