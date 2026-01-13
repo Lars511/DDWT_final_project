@@ -3,12 +3,13 @@
 Please use a virtual environment in order to avoid issues
 
 ## Flask
-flask
-flask-login
-flask-wtf
-python-dotenv
-flask-sqlalchemy
-flask-migrate
+<li>flask</li>
+<li>flask-login</li>
+<li>flask-wtf</li>
+<li>python-dotenv</li>
+<li>flask-sqlalchemy</li>
+<li>flask-migrate</li>
+<li>flask-avatars</li>
 
 ## Other
-email-validator
+<li>email-validator</li>
