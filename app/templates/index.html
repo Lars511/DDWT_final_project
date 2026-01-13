@@ -2,10 +2,44 @@
 
 {% block content %}
 <h1>Meet & Go Groningen</h1>
+
 <p>
-    Meet & Go Groningen helps people find others to do activities together in Groningen.
+    Meet & Go Groningen is a social platform designed to help people in Groningen
+    connect through shared activities. Whether you are new to the city or simply
+    looking to meet others with similar interests, Meet & Go Groningen makes it
+    easy to find and organise activities together.
 </p>
+
 <p>
-    Browse activities, join events, or create your own.
+    Users can browse activities created by others, join events that match their
+    interests, or create their own activities. Activities are organised by
+    categories and activity types, making it simple to explore what is happening
+    in and around Groningen.
 </p>
+
+<p>
+    The goal of Meet & Go Groningen is to lower the barrier to social interaction
+    by bringing people together around everyday activities such as sports,
+    studying, walking, or leisure events.
+</p>
+
+
+{% if not current_user.is_authenticated %}
+    <p>
+        To create or join an activity, users need to have an account. This allows
+        the platform to keep activities organised and ensures that participants
+        can be properly managed.
+    </p>
+
+    <p>
+        <a href="{{ url_for('login') }}">
+            <button>Log in or create an account</button>
+        </a>
+    </p>
+{% else %}
+    <p>
+        You are logged in as <strong>{{ current_user.username }}</strong>.
+        You can browse activities, join events, or create your own activities.
+    </p>
+{% endif %}
 {% endblock %}
