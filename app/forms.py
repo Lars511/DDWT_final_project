@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, DateField
 from wtforms.validators import DataRequired, EqualTo
 from app import db
 from app.models import Users
@@ -37,6 +37,7 @@ class SignUpForm(FlaskForm):
 class EditProfile(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     bio = StringField('Bio')
+    birthday = DateField('Birthday', format='%Y-%m-%d')
     submit = SubmitField('Save')
 
     def validate_email(self, email):

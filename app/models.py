@@ -11,6 +11,7 @@ from typing import Optional
 import secrets
 import sqlalchemy as sa
 import sqlalchemy.orm as so
+from datetime import date
 
 
 class Users(UserMixin, db.Model):
@@ -18,6 +19,7 @@ class Users(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key = True)
     email = db.Column(db.String(64), unique=True, nullable=False)
     username = db.Column(db.String(64), unique=True, nullable=False)
+    birthday = db.Column(db.Date, nullable=True)
     bio = db.Column(db.String(256))
     last_seen: so.Mapped[Optional[datetime]] = so.mapped_column(
         default=lambda: datetime.now(timezone.utc))
@@ -36,7 +38,16 @@ class Users(UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+    
+    def age(self):
+        if not self.birthday:
+            return None
+        today = date.today()
 
+        return today.year - self.birthday.year - (
+            (today.month, today.day) < (self.birthday.month, self.birthday.day)
+        )
+        
 
 # Loading the user
 @login.user_loader

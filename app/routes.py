@@ -93,6 +93,7 @@ def edit_profile():
     if form.validate_on_submit():
         current_user.email = form.email.data
         current_user.bio = form.bio.data
+        current_user.birthday = form.birthday.data
         db.session.commit()
         flash('Profile updated succesfully!')
         return redirect(url_for('profile', username=current_user.username))
