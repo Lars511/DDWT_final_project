@@ -5,8 +5,9 @@
 
 <p> Username: {{user.username}}</p>
 <p> Email: {{user.email}} </p>
-<p> About me: {{user.bio}}</p>
+<p> Age: {{ user.age() if user.age() else 'Unknown' }}</p>
 <p>Last seen on: {{ user.last_seen }}</p>
+<p> About me: {{user.bio}}</p>
 
 {% if current_user.username == user.username%}
 <td>
