@@ -16,7 +16,6 @@ from datetime import date, time
 # HOME
 @app.route('/', methods=['GET'])
 @app.route('/index')
-@login_required
 def index():
     return render_template('index.html')
 
