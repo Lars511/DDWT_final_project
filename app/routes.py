@@ -4,7 +4,7 @@ Setting up the routes for the html pages
 
 from flask import render_template, flash, redirect, request, url_for, jsonify
 from flask_login import current_user, login_user, logout_user, login_required
-from app import db, app
+from app import db, app, avatars
 from app.forms import LoginForm, SignUpForm, EditProfile
 from app.models import Users, Activity, Category
 from app.models import ActivityType
@@ -71,10 +71,11 @@ def register():
     return render_template('register.html', title='Register', form=form)
 
 # PROFILE
-@app.route('/profile', methods=['GET', 'POST'])
+@app.route('/profile/<username>', methods=['GET', 'POST'])
 @login_required
-def profile():
-    return render_template('profile.html')
+def profile(username):
+    user = db.first_or_404(sa.select(Users).where(Users.username == username))
+    return render_template('profile.html', user=user, avatars=avatars)
 
 # EDIT PROFILE
 @app.route('/edit_profile', methods=['GET', 'POST'])
@@ -87,7 +88,7 @@ def edit_profile():
         current_user.bio = form.bio.data
         db.session.commit()
         flash('Profile updated succesfully!')
-        return redirect(url_for('profile'))
+        return redirect(url_for('profile', username=current_user.username))
 
     elif request.method == 'GET':
         form.email.data = current_user.email
