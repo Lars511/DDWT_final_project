@@ -7,10 +7,12 @@ from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 from flask_migrate import Migrate
 import os
+from flask_avatars import Avatars
 
 load_dotenv()
 
 app = Flask(__name__)
+avatars = Avatars(app)
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
