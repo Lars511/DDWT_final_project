@@ -10,7 +10,7 @@ from app.models import Users, Activity, Category
 from app.models import ActivityType
 import sqlalchemy as sa
 from urllib.parse import urlsplit
-from datetime import date, time
+from datetime import date, time, datetime, timezone
 
 
 # HOME
@@ -18,6 +18,13 @@ from datetime import date, time
 @app.route('/index')
 def index():
     return render_template('index.html')
+
+# LAST SEEN
+@app.before_request
+def before_request():
+    if current_user.is_authenticated:
+        current_user.last_seen = datetime.now(timezone.utc)
+        db.session.commit()
 
 
 # LOGIN

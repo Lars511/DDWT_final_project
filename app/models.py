@@ -19,6 +19,8 @@ class Users(UserMixin, db.Model):
     email = db.Column(db.String(64), unique=True, nullable=False)
     username = db.Column(db.String(64), unique=True, nullable=False)
     bio = db.Column(db.String(256))
+    last_seen: so.Mapped[Optional[datetime]] = so.mapped_column(
+        default=lambda: datetime.now(timezone.utc))
     password_hash = db.Column(db.String(128), nullable=False)
 
     """
@@ -34,6 +36,7 @@ class Users(UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
 
 # Loading the user
 @login.user_loader
