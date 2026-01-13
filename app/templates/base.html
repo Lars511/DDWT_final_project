@@ -17,7 +17,7 @@
       <a href="/register">Register</a>
       {% else %}
       <a href="{{ url_for('logout') }}">Logout</a>
-      <a href="{{url_for('profile')}}">Profile</a>
+      <a href="{{url_for('profile', username=current_user.username)}}">Profile</a>
       {% endif %}
 </nav>
 
