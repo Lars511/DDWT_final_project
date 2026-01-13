@@ -101,6 +101,7 @@ def edit_profile():
     elif request.method == 'GET':
         form.email.data = current_user.email
         form.bio.data = current_user.bio
+        form.birthday.data = current_user.birthday
 
     return render_template('edit_profile.html', form=form)
 
