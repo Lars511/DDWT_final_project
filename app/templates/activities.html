@@ -16,7 +16,7 @@
             <th>Location</th>
             <th>Date</th>
             <th>Time</th>
-            <th>Max</th>
+            <th>Participants</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -30,7 +30,7 @@
             <td>{{ activity.location }}</td>
             <td>{{ activity.activity_date }}</td>
             <td>{{ activity.activity_time }}</td>
-            <td>{{ activity.max_participants }}</td>
+            <td>{{ activity.get_participant_count() }} / {{ activity.max_participants }}</td>
             <td>
                 <a href="{{ url_for('edit_activity', id=activity.id) }}">Edit</a>
 

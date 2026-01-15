@@ -134,6 +134,15 @@ def create_activity():
         )
         db.session.add(activity)
         db.session.commit()
+
+        # automatically add creator as participant
+        creator_participant = ActivityParticipant(
+            user_id=current_user.id,
+            activity_id=activity.id
+        )
+        db.session.add(creator_participant)
+        db.session.commit()
+
         flash("Activity created successfully!")
         return redirect(url_for("activities"))
 
@@ -218,11 +227,6 @@ def category_detail(id):
 @login_required
 def join_activity(id):
     activity = Activity.query.get_or_404(id)
-
-    # prevent joining own activity (optional but good)
-    if activity.creator_id == current_user.id:
-        flash("You cannot join your own activity.")
-        return redirect(url_for("activities"))
 
     # prevent joining twice
     if activity.has_user_joined(current_user.id):
