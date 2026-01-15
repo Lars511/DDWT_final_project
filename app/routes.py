@@ -7,7 +7,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from app import db, app, avatars
 from app.forms import LoginForm, SignUpForm, EditProfile
 from app.models import Users, Activity, Category
-from app.models import ActivityType
+from app.models import ActivityType, ActivityParticipant
 import sqlalchemy as sa
 from urllib.parse import urlsplit
 from datetime import date, time, datetime, timezone
@@ -213,6 +213,51 @@ def category_detail(id):
         category=category,
         activity_types=activity_types
     )
+
+@app.route("/activities/<int:id>/join", methods=["POST"])
+@login_required
+def join_activity(id):
+    activity = Activity.query.get_or_404(id)
+
+    # prevent joining own activity (optional but good)
+    if activity.creator_id == current_user.id:
+        flash("You cannot join your own activity.")
+        return redirect(url_for("activities"))
+
+    # prevent joining twice
+    if activity.has_user_joined(current_user.id):
+        flash("You have already joined this activity.")
+        return redirect(url_for("activities"))
+
+    # prevent joining if full
+    if activity.is_full():
+        flash("This activity is already full.")
+        return redirect(url_for("activities"))
+
+    participant = ActivityParticipant(
+        user_id=current_user.id,
+        activity_id=activity.id
+    )
+    db.session.add(participant)
+    db.session.commit()
+
+    flash("You have successfully joined the activity!")
+    return redirect(url_for("activities"))
+
+@app.route("/activities/<int:id>/leave", methods=["POST"])
+@login_required
+def leave_activity(id):
+    participant = ActivityParticipant.query.filter_by(
+        activity_id=id,
+        user_id=current_user.id
+    ).first()
+
+    if participant:
+        db.session.delete(participant)
+        db.session.commit()
+        flash("You have left the activity.")
+
+    return redirect(url_for("activities"))
 
 # ERROR
 @app.route("/error")

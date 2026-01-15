@@ -39,6 +39,21 @@
                       style="display:inline;">
                     <button type="submit">Delete</button>
                 </form>
+                {% if activity.has_user_joined(current_user.id) %}
+                    <form method="POST"
+                          action="{{ url_for('leave_activity', id=activity.id) }}"
+                          style="display:inline;">
+                        <button type="submit">Leave</button>
+                    </form>
+                {% elif not activity.is_full() %}
+                    <form method="POST"
+                          action="{{ url_for('join_activity', id=activity.id) }}"
+                          style="display:inline;">
+                        <button type="submit">Join</button>
+                    </form>
+                {% else %}
+                    <span>Full</span>
+                {% endif %}
             </td>
         </tr>
         {% endfor %}
