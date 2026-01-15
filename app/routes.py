@@ -158,6 +158,11 @@ def create_activity():
 @login_required
 def edit_activity(id):
     activity = Activity.query.get_or_404(id)
+
+    if activity.creator_id != current_user.id:
+        flash("You are not allowed to edit this activity.")
+        return redirect(url_for("activities"))
+
     categories = Category.query.all()
     activity_types = ActivityType.query.all()
 
@@ -188,6 +193,11 @@ def edit_activity(id):
 @login_required
 def delete_activity(id):
     activity = Activity.query.get_or_404(id)
+
+    if activity.creator_id != current_user.id:
+        flash("You are not allowed to delete this activity.")
+        return redirect(url_for("activities"))
+
     db.session.delete(activity)
     db.session.commit()
     flash("Activity deleted.")
