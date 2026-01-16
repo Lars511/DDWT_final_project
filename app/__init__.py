@@ -37,3 +37,7 @@ login.login_view = 'login'
 
 from app import routes
 from . import models
+
+
+from app.api import bp as api_bp
+app.register_blueprint(api_bp, url_prefix='/api')

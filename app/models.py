@@ -13,6 +13,29 @@ import sqlalchemy as sa
 import sqlalchemy.orm as so
 from datetime import date
 
+class PaginatedAPIMixin(object):
+    @staticmethod
+    def to_collection_dict(query, page, per_page, endpoint, **kwargs):
+        resources = db.paginate(query, page=page, per_page=per_page,
+                                error_out=False)
+        data = {
+            'items': [item.to_dict() for item in resources.items],
+            '_meta': {
+                'page': page,
+                'per_page': per_page,
+                'total_pages': resources.pages,
+                'total_items': resources.total
+            },
+            '_links': {
+                'self': url_for(endpoint, page=page, per_page=per_page,
+                                **kwargs),
+                'next': url_for(endpoint, page=page + 1, per_page=per_page,
+                                **kwargs) if resources.has_next else None,
+                'prev': url_for(endpoint, page=page - 1, per_page=per_page,
+                                **kwargs) if resources.has_prev else None
+            }
+        }
+        return data
 
 class Users(UserMixin, db.Model):
     __table_args__ = {'extend_existing': True}
@@ -89,7 +112,7 @@ class ActivityType(db.Model):
         return f'<ActivityType {self.name}>'
 
 
-class Activity(db.Model):
+class Activity(PaginatedAPIMixin, db.Model):
     """Activity model for social events"""
     __tablename__ = 'activities'
 
@@ -110,6 +133,30 @@ class Activity(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
+    def to_dict(self):
+        data = {
+            'Id': self.id,
+            'Title': self.title,
+            'Description': self.description,
+            'Location':self.location,
+            'Date': self.activity_date.isoformat() if self.activity_date else None,
+            'Time': self.activity_time.isoformat() if self.activity_time else None,
+            'Max_participants': self.max_participants,
+            'Creator':self.creator_id,
+            'Category': self.category_id,
+            'Type': self.activity_type_id,
+            'Created': self.created_at.isoformat() if self.created_at else None,
+            'Updated': self.updated_at.isoformat() if self.updated_at else None
+        }
+        
+        return data
+    
+    def from_dict(self, data, new_activity=False):
+        for field in ['Title', 'Description', 'Location', 'Date', 'Time', 
+                      'Max_participants', 'Category', 'Type']:
+            if field in data:
+                setattr(self, field, data[field])
+    
     def __repr__(self):
         return f'<Activity {self.title}>'
 
