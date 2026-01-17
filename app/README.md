@@ -10,6 +10,7 @@ Please use a virtual environment in order to avoid issues
 <li>flask-sqlalchemy</li>
 <li>flask-migrate</li>
 <li>flask-avatars</li>
+<li>flask-httpauth</li>
 
 ## Other
 <li>email-validator</li>
