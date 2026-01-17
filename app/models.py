@@ -37,7 +37,7 @@ class PaginatedAPIMixin(object):
         }
         return data
 
-class Users(UserMixin, db.Model):
+class Users(UserMixin,PaginatedAPIMixin,  db.Model):
     __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer, primary_key = True)
     email = db.Column(db.String(64), unique=True, nullable=False)
@@ -48,12 +48,32 @@ class Users(UserMixin, db.Model):
         default=lambda: datetime.now(timezone.utc))
     password_hash = db.Column(db.String(128), nullable=False)
 
-    """
-    For creation of the API token
+    
     token: so.Mapped[Optional[str]] = so.mapped_column(
         sa.String(32), index=True, unique=True)
     token_expiration: so.Mapped[Optional[datetime]]
-    """
+    
+    def get_token(self, expires_in=3600):
+        now = datetime.now(timezone.utc)
+        if self.token and self.token_expiration.replace(
+                tzinfo=timezone.utc) > now + timedelta(seconds=60):
+            return self.token
+        self.token = secrets.token_hex(16)
+        self.token_expiration = now + timedelta(seconds=expires_in)
+        db.session.add(self)
+        return self.token
+
+    def revoke_token(self):
+        self.token_expiration = datetime.now(timezone.utc) - timedelta(
+            seconds=1)
+
+    @staticmethod
+    def check_token(token):
+        user = db.session.scalar(sa.select(Users).where(Users.token == token))
+        if user is None or user.token_expiration.replace(
+                tzinfo=timezone.utc) < datetime.now(timezone.utc):
+            return None
+        return user
 
     # Password hashing
     def set_password(self, password):
@@ -70,7 +90,30 @@ class Users(UserMixin, db.Model):
         return today.year - self.birthday.year - (
             (today.month, today.day) < (self.birthday.month, self.birthday.day)
         )
+    
+    def to_dict(self):
+        data = {
+            'id': self.id,
+            'username': self.username,
+            'birthday':self.birthday.isoformat() if self.birthday else None,
+            'bio': self.bio,
+            'last_seen': self.last_seen.isoformat() if self.last_seen else None,
+            'age': self.age()
+        }
         
+        return data
+    
+    def from_dict(self, data, signup=False):
+        for field in ['birthday', 'bio', 'last_seen']:
+            if field in data:
+                setattr(self, field, data[field])
+        
+        if signup:
+            if 'password' in data:
+                self.set_password(data['password'])
+                self.username = data['username']
+                self.email = data['email']
+            
 
 # Loading the user
 @login.user_loader
@@ -133,6 +176,11 @@ class Activity(PaginatedAPIMixin, db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
+    # Relationships
+    creator = db.relationship('Users', backref='activities_created')
+    category = db.relationship('Category', backref='activities')
+    activity_type = db.relationship('ActivityType', backref='activities')
+
     def to_dict(self):
         data = {
             'Id': self.id,
@@ -142,9 +190,9 @@ class Activity(PaginatedAPIMixin, db.Model):
             'Date': self.activity_date.isoformat() if self.activity_date else None,
             'Time': self.activity_time.isoformat() if self.activity_time else None,
             'Max_participants': self.max_participants,
-            'Creator':self.creator_id,
-            'Category': self.category_id,
-            'Type': self.activity_type_id,
+            'Creator': self.creator.username if self.creator else None,
+            'Category': self.category.name if self.category else None,
+            'Type': self.activity_type.name if self.activity_type else None,
             'Created': self.created_at.isoformat() if self.created_at else None,
             'Updated': self.updated_at.isoformat() if self.updated_at else None
         }
