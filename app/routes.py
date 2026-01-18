@@ -109,7 +109,18 @@ def edit_profile():
 @app.route("/activities")
 @login_required
 def activities():
-    activities = Activity.query.all()
+    now = datetime.now()
+    current_date = now.date()
+    current_time = now.time()
+
+    # Query all activities and filter out past ones
+    all_activities = Activity.query.all()
+    activities = [
+        activity for activity in all_activities
+        if (activity.activity_date > current_date) or
+           (activity.activity_date == current_date and activity.activity_time > current_time)
+    ]
+
     return render_template("activities.html", activities=activities)
 
 
