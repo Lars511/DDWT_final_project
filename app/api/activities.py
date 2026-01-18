@@ -2,17 +2,17 @@ from app.api import bp
 from app.models import Activity, Category, Users, ActivityType
 from app import db
 import sqlalchemy as sa
-from flask import request, url_for
+from flask import request, url_for, abort
 from app.api.errors import bad_request
 from app.api.auth import token_auth
 
-@token_auth.login_required
 @bp.route('activities/<int:id>',  methods=['GET'])
+@token_auth.login_required
 def get_activity(id):
     return db.get_or_404(Activity, id).to_dict()
 
-@token_auth.login_required
 @bp.route('/activities', methods=['GET'])
+@token_auth.login_required
 def get_activities():
     page = request.args.get('page', 1, type=int)
     per_page = min(request.args.get('per_page', 10, type=int), 100)
@@ -29,8 +29,8 @@ Categories are numbered in the following way:
 6 = university and student life
 7 = other/custom
 """
-@token_auth.login_required
 @bp.route('categories/<int:id>')
+@token_auth.login_required
 def get_category(id):
     """Creates a list with all activities of that category, such as Sport and Fitness"""
     page = request.args.get('page', 1, type=int)
@@ -39,8 +39,8 @@ def get_category(id):
                                    'api.get_category', id=id)
 
 # Keep in mind that activity type names are case sensitive
+@bp.route('categories/activity_type/<type>', methods=['GET'])
 @token_auth.login_required
-@bp.route('categories/activity_type/<type>')
 def get_activity_type(type):
     """Creates a list with all activities of that type, such as tennis"""
     page = request.args.get('page', 1, type=int)
@@ -48,8 +48,8 @@ def get_activity_type(type):
     return Activity.to_collection_dict(sa.select(Activity).join(ActivityType).where(ActivityType.name == type), page, per_page,
                                    'api.get_activity_type', type=type)
 
-@token_auth.login_required
 @bp.route('/profile/activities_created/<name>', methods=['GET'])
+@token_auth.login_required
 def get_created_activities(name):
     """Creates a list of all activities created by that user"""
     page = request.args.get('page', 1, type=int)
@@ -58,7 +58,6 @@ def get_created_activities(name):
                                    'api.get_created_activities', name=name)
 
 # Pulling from the Users table
-
 @bp.route('/users', methods=['POST'])
 def create_user():
     """Creates a new user through the API"""
@@ -80,13 +79,29 @@ def create_user():
     return user.to_dict(), 201, {'Location': url_for('api.create_user',
                                                      id=user.id)}
 
-""" 
-Make one for editing user profile
-https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-xxiii-application-programming-interfaces-apis
-"""
-
+@bp.route('/users/<int:id>', methods=['PUT'])
 @token_auth.login_required
-@bp.route('/profile')
+def update_user(id):
+    """
+    Updates a user profile through the API using user id. User id can be found through
+    api/profile/username
+    """
+    user = db.get_or_404(Users, id)
+    data = request.get_json()
+    if 'username' in data and data['username'] != user.username and \
+        db.session.scalar(sa.select(Users).where(
+            Users.username == data['username'])):
+        return bad_request('please use a different username')
+    if 'email' in data and data['email'] != user.email and \
+        db.session.scalar(sa.select(Users).where(
+            Users.email == data['email'])):
+        return bad_request('please use a different email address')
+    user.from_dict(data, signup=False)
+    db.session.commit()
+    return user.to_dict()
+
+@bp.route('/profiles')
+@token_auth.login_required
 def get_profiles():
     """Creates a list of all profiles"""
     page = request.args.get('page', 1, type=int)
@@ -94,11 +109,13 @@ def get_profiles():
     return Users.to_collection_dict(sa.select(Users), page, per_page,
                                    'api.get_profiles')
 
+@bp.route('/profile/<username>')
 @token_auth.login_required
-@bp.route('/profile/<name>')
-def get_profile(name):
+def get_profile(username):
     """Pulls a specific profile"""
-    page = request.args.get('page', 1, type=int)
-    per_page = min(request.args.get('per_page', 10, type=int), 100)
-    return Users.to_collection_dict(sa.select(Users).where(Users.username == name), page, per_page,
-                                   'api.get_profile', name=name)
+    user = db.session.scalar(
+        sa.select(Users).where(Users.username == username)
+    )
+    if user is None:
+        abort(404, description="User not found")
+    return user.to_dict()
