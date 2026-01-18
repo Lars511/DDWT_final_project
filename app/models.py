@@ -48,11 +48,11 @@ class Users(UserMixin,PaginatedAPIMixin,  db.Model):
         default=lambda: datetime.now(timezone.utc))
     password_hash = db.Column(db.String(128), nullable=False)
 
-    
+
     token: so.Mapped[Optional[str]] = so.mapped_column(
         sa.String(32), index=True, unique=True)
     token_expiration: so.Mapped[Optional[datetime]]
-    
+
     def get_token(self, expires_in=3600):
         now = datetime.now(timezone.utc)
         if self.token and self.token_expiration.replace(
@@ -81,7 +81,7 @@ class Users(UserMixin,PaginatedAPIMixin,  db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
-    
+
     def age(self):
         if not self.birthday:
             return None
@@ -90,7 +90,7 @@ class Users(UserMixin,PaginatedAPIMixin,  db.Model):
         return today.year - self.birthday.year - (
             (today.month, today.day) < (self.birthday.month, self.birthday.day)
         )
-    
+
     def to_dict(self):
         data = {
             'id': self.id,
@@ -100,20 +100,20 @@ class Users(UserMixin,PaginatedAPIMixin,  db.Model):
             'last_seen': self.last_seen.isoformat() if self.last_seen else None,
             'age': self.age()
         }
-        
+
         return data
-    
+
     def from_dict(self, data, signup=False):
         for field in ['birthday', 'bio', 'last_seen']:
             if field in data:
                 setattr(self, field, data[field])
-        
+
         if signup:
             if 'password' in data:
                 self.set_password(data['password'])
                 self.username = data['username']
                 self.email = data['email']
-            
+
 
 # Loading the user
 @login.user_loader
@@ -196,15 +196,15 @@ class Activity(PaginatedAPIMixin, db.Model):
             'Created': self.created_at.isoformat() if self.created_at else None,
             'Updated': self.updated_at.isoformat() if self.updated_at else None
         }
-        
+
         return data
-    
+
     def from_dict(self, data, new_activity=False):
-        for field in ['Title', 'Description', 'Location', 'Date', 'Time', 
+        for field in ['Title', 'Description', 'Location', 'Date', 'Time',
                       'Max_participants', 'Category', 'Type']:
             if field in data:
                 setattr(self, field, data[field])
-    
+
     def __repr__(self):
         return f'<Activity {self.title}>'
 
@@ -234,6 +234,11 @@ class Activity(PaginatedAPIMixin, db.Model):
             activity_id=self.id,
             user_id=user_id
         ).first() is not None
+
+    def get_participants(self):
+        """Get all participants for this activity"""
+        participants = ActivityParticipant.query.filter_by(activity_id=self.id).all()
+        return [participant.get_user() for participant in participants]
 
 
 class ActivityParticipant(db.Model):
