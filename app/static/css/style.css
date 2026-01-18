@@ -1,0 +1,603 @@
+/* =========================================================
+   GENERAL LAYOUT
+   ========================================================= */
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+
+    margin: 0;
+    padding: 0;
+
+    background-color: #f4f6f8;
+
+    color: #333;
+}
+
+main {
+    max-width: 1000px;
+
+    margin: 40px auto;
+
+    padding: 20px;
+
+    background-color: #ffffff;
+
+    border-radius: 6px;
+}
+
+/* =========================================================
+   NAVIGATION BAR
+   Styles for the top navigation menu.
+   ========================================================= */
+
+nav {
+    background-color: #1f2933;
+
+    padding: 12px 20px;
+}
+
+nav a {
+    color: #ffffff;
+
+    text-decoration: none;
+
+    margin-right: 15px;
+
+    font-weight: bold;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+/* =========================================================
+   TEXT STYLING
+   Basic typography rules.
+   ========================================================= */
+
+h1 {
+    margin-top: 0;
+
+    color: #1f2933;
+}
+
+p {
+    line-height: 1.6;
+}
+
+/* =========================================================
+   TABLES
+   Used on pages like Activities and Categories.
+   ========================================================= */
+
+table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 10px;
+
+    text-align: left;
+}
+
+th {
+    background-color: #f0f2f5;
+
+    border-bottom: 2px solid #ccc;
+}
+
+td {
+    border-bottom: 1px solid #e0e0e0;
+}
+
+tr:hover {
+    background-color: #f9fafb;
+}
+
+/* =========================================================
+   BUTTONS
+   Used for actions like Join, Leave, Edit, Delete.
+   ========================================================= */
+
+button {
+    padding: 6px 10px;
+
+    border: none;
+
+    border-radius: 4px;
+
+    background-color: #2563eb;
+
+    color: white;
+
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #1e40af;
+}
+
+form {
+    display: inline;
+}
+
+/* =========================================================
+   FLASH MESSAGES
+   Used for success/error feedback after actions.
+   ========================================================= */
+
+.flash {
+    padding: 10px;
+
+    margin-bottom: 15px;
+
+    border-radius: 4px;
+
+    background-color: #e0f2fe;
+
+    color: #075985;
+}
+
+/* =========================================================
+   HERO SECTION (HOMEPAGE)
+   Large image with text overlay.
+   ========================================================= */
+
+.hero {
+    position: relative;
+
+    margin-bottom: 40px;
+}
+
+.hero img {
+    width: 100%;
+
+    height: 350px;
+
+    object-fit: cover;
+
+    border-radius: 6px;
+}
+
+.hero-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    background-color: rgba(31, 41, 51, 0.65);
+
+    color: white;
+
+    padding: 25px 30px;
+
+    border-radius: 6px;
+
+    max-width: 700px;
+
+    text-align: center;
+}
+
+.hero-text h1 {
+    margin-top: 0;
+    margin-bottom: 10px;
+
+    color: white;
+}
+
+.hero-text p {
+    margin-bottom: 15px;
+}
+
+/* =========================================================
+   HERO BUTTONS
+   Call-to-action buttons on homepage.
+   ========================================================= */
+
+.hero-buttons {
+    margin-top: 15px;
+}
+
+.btn {
+    display: inline-block;
+
+    padding: 10px 16px;
+
+    background-color: #2563eb;
+
+    color: white;
+
+    text-decoration: none;
+
+    border-radius: 4px;
+
+    margin-right: 10px;
+
+    font-weight: bold;
+}
+
+.btn:hover {
+    background-color: #1e40af;
+}
+
+.btn-secondary {
+    background-color: #6b7280;
+}
+
+.btn-secondary:hover {
+    background-color: #4b5563;
+}
+
+.hero-note {
+    margin-top: 15px;
+
+    font-size: 0.95em;
+}
+
+/* =========================================================
+   HOME PAGE CONTENT
+   Text below the hero section.
+   ========================================================= */
+
+.home-content {
+    margin-top: 30px;
+
+    font-size: 1.05em;
+}
+
+/* =========================================================
+   LOGIN PAGE
+   ========================================================= */
+
+.login-container {
+    display: flex;
+    gap: 30px;
+    align-items: stretch;
+}
+
+.login-image {
+    flex: 1;
+}
+
+.login-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.login-box {
+    flex: 1;
+    padding: 20px;
+}
+
+.login-box h1 {
+    margin-top: 0;
+}
+
+.login-intro {
+    margin-bottom: 20px;
+    font-size: 1.05em;
+}
+
+.login-note {
+    margin-top: 15px;
+    font-size: 0.95em;
+}
+/* ---------- Login form details ---------- */
+
+.signin input[type="text"],
+.signin input[type="email"],
+.signin input[type="password"] {
+    width: 100%;
+    padding: 8px;
+    margin-top: 4px;
+}
+
+.error {
+    color: red;
+    font-size: 0.9em;
+}
+
+.signin button {
+    padding: 12px 20px;      /* Bigger button */
+    font-size: 1.05em;       /* Slightly larger text */
+}
+
+/* =========================================================
+   REGISTER / AUTH PAGES
+   ========================================================= */
+
+.auth-container {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.signin input[type="text"],
+.signin input[type="email"],
+.signin input[type="password"] {
+    width: 100%;
+    padding: 8px;
+    margin-top: 4px;
+    box-sizing: border-box;
+}
+
+.signin p {
+    margin-bottom: 15px;
+}
+
+.signin button {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.05em;
+}
+
+.error {
+    color: red;
+    font-size: 0.9em;
+}
+
+/* =========================
+   ACTIVITIES PAGE STYLES
+   ========================= */
+
+.activities-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.activities-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.btn-create {
+    background-color: #2563eb;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.btn-create:hover {
+    background-color: #1e40af;
+}
+
+/* =========================
+   ACTIVITIES TABLE
+   ========================= */
+
+.activities-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background-color: white;
+    margin-top: 20px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.activities-table th {
+    background-color: #f1f5f9;
+    padding: 14px 12px;
+    text-align: left;
+    font-weight: bold;
+    border-right: 1px solid #d1d5db;
+    border-bottom: 2px solid #cbd5e1;
+}
+
+.activities-table td {
+    padding: 14px 12px;
+    border-right: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e5e7eb;
+    vertical-align: top;
+}
+
+.activities-table th:last-child,
+.activities-table td:last-child {
+    border-right: none;
+}
+
+.activities-table tbody tr:hover {
+    background-color: #f9fafb;
+}
+
+.actions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.btn-edit {
+    color: #2563eb;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.btn-edit:hover {
+    text-decoration: underline;
+}
+
+.btn-delete {
+    background-color: #dc2626;
+    color: white;
+    border: none;
+    padding: 6px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-delete:hover {
+    background-color: #b91c1c;
+}
+
+.btn-join {
+    background-color: #16a34a;
+    color: white;
+    border: none;
+    padding: 6px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-join:hover {
+    background-color: #15803d;
+}
+
+.btn-leave {
+    background-color: #f97316;
+    color: white;
+    border: none;
+    padding: 6px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-leave:hover {
+    background-color: #ea580c;
+}
+
+.full-label {
+    color: #6b7280;
+    font-weight: bold;
+}
+
+/* =========================
+   FORM PAGES (CREATE / EDIT)
+   ========================= */
+
+.form-page {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.activity-form {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 4px;
+    border: 1px solid #cbd5e1;
+    font-size: 0.95rem;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 1px #2563eb;
+}
+
+.btn-primary {
+    margin-top: 10px;
+    padding: 12px 18px;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    background-color: #1e40af;
+}
+
+/* ---------- Categories page ---------- */
+
+.categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
+}
+
+.category-card {
+    position: relative;
+    height: 220px;
+    border-radius: 10px;
+    overflow: hidden;
+    text-decoration: none;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.category-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.category-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.category-overlay h2 {
+    color: white;
+    font-size: 1.5em;
+    text-align: center;
+    padding: 0 15px;
+}
+
+/* ---------- Category background images ---------- */
+
+.category-1 {
+    background-image: url("/static/images/sport_fit.jpg");
+}
+
+.category-2 {
+    background-image: url("/static/images/work.jpg");
+}
+
+.category-3 {
+    background-image: url("/static/images/social.jpg");
+}
+
+.category-4 {
+    background-image: url("/static/images/outdoor.jpg");
+}
+
+.category-5 {
+    background-image: url("/static/images/gaming.jpg");
+}
+
+.category-6 {
+    background-image: url("/static/images/study.jpg");
+}
+
+.category-7 {
+    background-image: url("/static/images/custom.jpg");
+}

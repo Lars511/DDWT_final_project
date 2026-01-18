@@ -1,38 +1,68 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Sign In</h1>
 
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for message in messages %}
-                <p style="color: red;">{{ message }}</p>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
+<div class="login-container">
 
-    
-    <form action="" method="post" novalidate class="signin">
-        {{ form.hidden_tag() }}
-        <p>
-            Email<br>
-            {{ form.email(size=32) }}
-            {% for error in form.email.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.password.label }}<br>
-            {{ form.password(size=32) }}
-            {% for error in form.password.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
-        <p>{{ form.submit() }}</p>
+    <!-- Left side: image -->
+    <div class="login-image">
+        <img src="{{ url_for('static', filename='images/login_1.jpg') }}"
+             alt="People connecting in Groningen">
+    </div>
 
-        <br><p>
-            New User? <a href="{{ url_for('register') }}">Click to Register!</a>
+    <!-- Right side: login form -->
+    <div class="login-box">
+
+        <h1>Welcome back</h1>
+
+        <p class="login-intro">
+            Log in to Meet & Go Groningen to join activities, meet new people,
+            and organise events together in the city.
         </p>
-    </form>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <p class="flash">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form action="" method="post" novalidate class="signin">
+            {{ form.hidden_tag() }}
+
+            <p>
+                {{ form.email.label }}<br>
+                {{ form.email(size=32) }}
+                {% for error in form.email.errors %}
+                    <span class="error">{{ error }}</span>
+                {% endfor %}
+            </p>
+
+            <p>
+                {{ form.password.label }}<br>
+                {{ form.password(size=32) }}
+                {% for error in form.password.errors %}
+                    <span class="error">{{ error }}</span>
+                {% endfor %}
+            </p>
+
+            <p>
+                {{ form.remember_me() }} {{ form.remember_me.label }}
+            </p>
+
+            <p>
+                <button type="submit">Log in</button>
+            </p>
+
+            <p class="login-note">
+                New here?
+                <a href="{{ url_for('register') }}">Create an account</a>
+            </p>
+        </form>
+
+    </div>
+
+</div>
+
 {% endblock %}
