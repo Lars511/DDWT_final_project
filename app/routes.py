@@ -109,6 +109,7 @@ def edit_profile():
 @app.route("/activities")
 @login_required
 def activities():
+    # Get current date and time
     now = datetime.now()
     current_date = now.date()
     current_time = now.time()
@@ -121,7 +122,8 @@ def activities():
            (activity.activity_date == current_date and activity.activity_time > current_time)
     ]
 
-    # Sort activities chronologically by date and time
+    # Sort activities chronologically (earliest first)
+    # First by date, then by time
     activities.sort(key=lambda x: (x.activity_date, x.activity_time))
 
     return render_template("activities.html", activities=activities)
@@ -241,10 +243,30 @@ def get_activity_types(category_id):
 def category_detail(id):
     category = Category.query.get_or_404(id)
     activity_types = ActivityType.query.filter_by(category_id=id).all()
+
+    # Get current date and time
+    now = datetime.now()
+    current_date = now.date()
+    current_time = now.time()
+
+    # Get all activities for this category
+    all_activities = Activity.query.filter_by(category_id=id).all()
+
+    # Filter out past activities
+    activities = [
+        activity for activity in all_activities
+        if (activity.activity_date > current_date) or
+           (activity.activity_date == current_date and activity.activity_time > current_time)
+    ]
+
+    # Sort activities chronologically (earliest first)
+    activities.sort(key=lambda x: (x.activity_date, x.activity_time))
+
     return render_template(
         "category_detail.html",
         category=category,
-        activity_types=activity_types
+        activity_types=activity_types,
+        activities=activities
     )
 
 @app.route("/activities/<int:id>/join", methods=["POST"])
