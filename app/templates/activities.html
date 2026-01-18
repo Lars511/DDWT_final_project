@@ -32,13 +32,16 @@
             <td>{{ activity.activity_time }}</td>
             <td>{{ activity.get_participant_count() }} / {{ activity.max_participants }}</td>
             <td>
-                <a href="{{ url_for('edit_activity', id=activity.id) }}">Edit</a>
+                {% if activity.creator_id == current_user.id %}
+                    <a href="{{ url_for('edit_activity', id=activity.id) }}">Edit</a>
 
-                <form method="POST"
-                      action="{{ url_for('delete_activity', id=activity.id) }}"
-                      style="display:inline;">
-                    <button type="submit">Delete</button>
-                </form>
+                    <form method="POST"
+                          action="{{ url_for('delete_activity', id=activity.id) }}"
+                          style="display:inline;">
+                        <button type="submit">Delete</button>
+                    </form>
+                {% endif %}
+
                 {% if activity.has_user_joined(current_user.id) %}
                     <form method="POST"
                           action="{{ url_for('leave_activity', id=activity.id) }}"
