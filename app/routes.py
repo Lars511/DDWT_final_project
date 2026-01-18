@@ -121,6 +121,9 @@ def activities():
            (activity.activity_date == current_date and activity.activity_time > current_time)
     ]
 
+    # Sort activities chronologically by date and time
+    activities.sort(key=lambda x: (x.activity_date, x.activity_time))
+
     return render_template("activities.html", activities=activities)
 
 
