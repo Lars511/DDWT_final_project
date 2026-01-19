@@ -2,7 +2,7 @@
 Setting up the routes for the html pages
 """
 
-from flask import render_template, flash, redirect, request, url_for, jsonify
+from flask import render_template, flash, redirect, request, url_for, jsonify, session
 from flask_login import current_user, login_user, logout_user, login_required
 from app import db, app, avatars
 from app.forms import LoginForm, SignUpForm, EditProfile
@@ -43,7 +43,7 @@ def login():
             return redirect(url_for('login'))
 
         login_user(user, remember=form.remember_me.data)
-
+        session.permanent = True
         next_page = request.args.get('next')
         if not next_page or urlsplit(next_page).netloc != '':
             next_page = url_for('index')

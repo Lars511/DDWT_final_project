@@ -1,13 +1,14 @@
 """
 Setup for Flask
 """
-from flask import Flask, render_template
+from flask import Flask, render_template, session
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 from flask_migrate import Migrate
 import os
 from flask_avatars import Avatars
+from datetime import timedelta
 
 load_dotenv()
 
@@ -18,6 +19,8 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 # Getting the secret key
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=60)
+app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=14)
 
 # Configure SQLite database
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+os.path.join(
