@@ -32,8 +32,10 @@ main {
 
 nav {
     background-color: #1f2933;
-
     padding: 12px 20px;
+
+    display: flex;
+    justify-content: center;
 }
 
 nav a {
