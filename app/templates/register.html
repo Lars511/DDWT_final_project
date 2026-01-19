@@ -2,38 +2,51 @@
 
 {% block content %}
 
-<h1>Register</h1>
+<div class="auth-container">
+
+    <h1>Register</h1>
+
     <form action="" method="post" class="signin">
         {{ form.hidden_tag() }}
+
         <p>
             Email address <br>
-            {{form.email(size=64)}}<br>
+            {{ form.email(size=64) }}<br>
             {% for error in form.email.errors %}
-            <span style="color: red;">[{{ error }}]</span>
+                <span class="error">{{ error }}</span>
             {% endfor %}
         </p>
+
         <p>
             Username <br>
             {{ form.username(size=32) }}<br>
             {% for error in form.username.errors %}
-            <span style="color: red;">[{{ error }}]</span>
+                <span class="error">{{ error }}</span>
             {% endfor %}
         </p>
+
         <p>
             Password <br>
             {{ form.password(size=32) }}<br>
             {% for error in form.password.errors %}
-            <span style="color: red;">[{{ error }}]</span>
+                <span class="error">{{ error }}</span>
             {% endfor %}
         </p>
+
         <p>
-            Repeat password<br>
+            Repeat password <br>
             {{ form.password2(size=32) }}<br>
             {% for error in form.password2.errors %}
-            <span style="color: red;">[{{ error }}]</span>
+                <span class="error">{{ error }}</span>
             {% endfor %}
         </p>
-        <p>{{ form.submit() }}</p>
+
+        <p>
+            <button type="submit">Create account</button>
+        </p>
+
     </form>
+
+</div>
 
 {% endblock %}

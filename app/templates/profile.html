@@ -1,17 +1,77 @@
 {% extends "base.html" %}
-
 {% block content %}
-<img src="{{ avatars.robohash(user.username) }}">
 
-<p> Username: {{user.username}}</p>
-<p> Age: {{ user.age() if user.age() else 'Unknown' }}</p>
-<p>Last seen on: {{ user.last_seen }}</p>
-<p> About me: {{user.bio}}</p>
+<div class="profile-page">
 
-{% if current_user.username == user.username%}
-<p> Email: {{user.email}} </p>
-<td>
-    <a href="{{ url_for('edit_profile') }}">Edit</a>
-</td>
-{%endif%}
+    <div class="profile-card">
+
+        <div class="profile-avatar">
+            <img src="{{ avatars.robohash(user.username) }}" alt="Avatar">
+        </div>
+
+        <div class="profile-info">
+
+            <div class="profile-item">
+                <div class="profile-label">
+                    Username
+                    <span class="profile-icon">👤</span>
+                </div>
+                <div class="profile-value">
+                    ↳ {{ user.username }}
+                </div>
+            </div>
+
+            <div class="profile-item">
+                <div class="profile-label">
+                    Age
+                    <span class="profile-icon">🎂</span>
+                </div>
+                <div class="profile-value">
+                    ↳ {{ user.age() if user.age() else 'Unknown' }}
+                </div>
+            </div>
+
+            <div class="profile-item">
+                <div class="profile-label">
+                    Last seen
+                    <span class="profile-icon">🕒</span>
+                </div>
+                <div class="profile-value">
+                    ↳ {{ user.last_seen }}
+                </div>
+            </div>
+
+            <div class="profile-item">
+                <div class="profile-label">
+                    About me
+                    <span class="profile-icon">💬</span>
+                </div>
+                <div class="profile-value">
+                    ↳ {{ user.bio if user.bio else "No bio yet" }}
+                </div>
+            </div>
+
+            {% if current_user.username == user.username %}
+            <div class="profile-item">
+                <div class="profile-label">
+                    Email
+                    <span class="profile-icon">📧</span>
+                </div>
+                <div class="profile-value">
+                    ↳ {{ user.email }}
+                </div>
+            </div>
+
+            <div class="profile-actions">
+                <a href="{{ url_for('edit_profile') }}" class="btn-primary">
+                    Edit profile
+                </a>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+
 {% endblock %}

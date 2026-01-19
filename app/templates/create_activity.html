@@ -1,58 +1,70 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1>Create Activity</h1>
+<div class="form-page">
+    <h1>Create Activity</h1>
 
-<form method="POST">
-    <label>Category</label><br>
-    <select name="category_id" id="category_id" required>
-        <option value="">Select a category</option>
-        {% for category in categories %}
-            <option value="{{ category.id }}">
-                {{ category.name }}
-            </option>
-        {% endfor %}
-    </select><br><br>
+    <form method="POST" class="activity-form">
 
-    <label>Activity Type</label><br>
-    <select name="activity_type_id" id="activity_type_id" required>
-        <option value="">Select a category first</option>
-    </select><br><br>
+        <div class="form-group">
+            <label>Category</label>
+            <select name="category_id" id="category_id" required>
+                <option value="">Select a category</option>
+                {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-    <label>Title</label><br>
-    <input type="text" name="title" required><br><br>
+        <div class="form-group">
+            <label>Activity Type</label>
+            <select name="activity_type_id" id="activity_type_id" required>
+                <option value="">Select a category first</option>
+            </select>
+        </div>
 
-    <label>Description</label><br>
-    <textarea name="description"></textarea><br><br>
+        <div class="form-group">
+            <label>Title</label>
+            <input type="text" name="title" required>
+        </div>
 
-    <label>Location</label><br>
-    <input type="text" name="location" required><br><br>
+        <div class="form-group">
+            <label>Description</label>
+            <textarea name="description" rows="4"></textarea>
+        </div>
 
-    <label>Date</label><br>
-    <input type="date" name="activity_date" required><br><br>
+        <div class="form-group">
+            <label>Location</label>
+            <input type="text" name="location" required>
+        </div>
 
-    <label>Time</label><br>
-    <input type="time" name="activity_time" required><br><br>
+        <div class="form-group">
+            <label>Date</label>
+            <input type="date" name="activity_date" required>
+        </div>
 
-    <label>Max participants</label><br>
-    <input type="number" name="max_participants" value="10" min="1"><br><br>
+        <div class="form-group">
+            <label>Time</label>
+            <input type="time" name="activity_time" required>
+        </div>
 
-    <button type="submit">Create Activity</button>
+        <div class="form-group">
+            <label>Max participants</label>
+            <input type="number" name="max_participants" value="10" min="1">
+        </div>
 
+        <button type="submit" class="btn-primary">Create Activity</button>
 
-</form>
+    </form>
+</div>
 
 <script>
-    // Load activity types when category changes
     document.getElementById('category_id').addEventListener('change', function() {
         const categoryId = this.value;
         const activityTypeSelect = document.getElementById('activity_type_id');
-
-        // Clear current options
         activityTypeSelect.innerHTML = '<option value="">Loading...</option>';
 
         if (categoryId) {
-            // Fetch activity types for this category
             fetch(`/api/activity-types/${categoryId}`)
                 .then(response => response.json())
                 .then(data => {
@@ -63,10 +75,6 @@
                         option.textContent = type.name;
                         activityTypeSelect.appendChild(option);
                     });
-                })
-                .catch(error => {
-                    console.error('Error loading activity types:', error);
-                    activityTypeSelect.innerHTML = '<option value="">Error loading types</option>';
                 });
         } else {
             activityTypeSelect.innerHTML = '<option value="">Select a category first</option>';
