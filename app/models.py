@@ -104,7 +104,7 @@ class Users(UserMixin,PaginatedAPIMixin,  db.Model):
         return data
 
     def from_dict(self, data, signup=False):
-        for field in ['birthday', 'bio', 'last_seen']:
+        for field in ['birthday', 'bio', 'last_seen', 'creator_id']:
             if field in data:
                 setattr(self, field, data[field])
 
@@ -183,25 +183,25 @@ class Activity(PaginatedAPIMixin, db.Model):
 
     def to_dict(self):
         data = {
-            'Id': self.id,
-            'Title': self.title,
-            'Description': self.description,
-            'Location':self.location,
-            'Date': self.activity_date.isoformat() if self.activity_date else None,
-            'Time': self.activity_time.isoformat() if self.activity_time else None,
-            'Max_participants': self.max_participants,
-            'Creator': self.creator.username if self.creator else None,
-            'Category': self.category.name if self.category else None,
-            'Type': self.activity_type.name if self.activity_type else None,
-            'Created': self.created_at.isoformat() if self.created_at else None,
-            'Updated': self.updated_at.isoformat() if self.updated_at else None
+            'id': self.id,
+            'title': self.title,
+            'description': self.description,
+            'location':self.location,
+            'activity_date': self.activity_date.isoformat() if self.activity_date else None,
+            'activity_time': self.activity_time.isoformat() if self.activity_time else None,
+            'max_participants': self.max_participants,
+            'creator_id': self.creator.username if self.creator else None,
+            'category_id': self.category.name if self.category else None,
+            'activity_type_id': self.activity_type.name if self.activity_type else None,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'updated_at': self.updated_at.isoformat() if self.updated_at else None
         }
 
         return data
 
     def from_dict(self, data, new_activity=False):
-        for field in ['Title', 'Description', 'Location', 'Date', 'Time',
-                      'Max_participants', 'Category', 'Type']:
+        for field in ['title', 'description', 'location', 'activity_date', 'activity_time','creator_id',
+                      'max_participants', 'category_id', 'activity_type_id']:
             if field in data:
                 setattr(self, field, data[field])
 
