@@ -5,6 +5,7 @@ import sqlalchemy as sa
 from flask import request, url_for, abort
 from app.api.errors import bad_request
 from app.api.auth import token_auth
+from datetime import datetime
 
 @bp.route('activities/<int:id>',  methods=['GET'])
 @token_auth.login_required
@@ -32,17 +33,18 @@ Categories are numbered in the following way:
 @bp.route('categories/<int:id>')
 @token_auth.login_required
 def get_category(id):
-    """Creates a list with all activities of that category, such as Sport and Fitness"""
+    """Creates a list with all activities of that category, such as Sport and Fitness."""
     page = request.args.get('page', 1, type=int)
     per_page = min(request.args.get('per_page', 10, type=int), 100)
     return Activity.to_collection_dict(sa.select(Activity).where(Activity.category_id == id), page, per_page,
                                    'api.get_category', id=id)
 
-# Keep in mind that activity type names are case sensitive
 @bp.route('categories/activity_type/<type>', methods=['GET'])
 @token_auth.login_required
 def get_activity_type(type):
-    """Creates a list with all activities of that type, such as tennis"""
+    """Creates a list with all activities of that type, such as Tennis.
+    The list of all activities is in populate_activities.py. Keep in mind
+    that these names are case sensitive"""
     page = request.args.get('page', 1, type=int)
     per_page = min(request.args.get('per_page', 10, type=int), 100)
     return Activity.to_collection_dict(sa.select(Activity).join(ActivityType).where(ActivityType.name == type), page, per_page,
@@ -56,6 +58,49 @@ def get_created_activities(name):
     per_page = min(request.args.get('per_page', 10, type=int), 100)
     return Activity.to_collection_dict(sa.select(Activity).join(Users).where(Users.username == name), page, per_page,
                                    'api.get_created_activities', name=name)
+
+"""make one here to create and edit activity. Then write a script to prove it works"""
+
+@bp.route('/create_activities', methods=['POST'])
+@token_auth.login_required
+def create_activity():
+    """Creates a new activity through the API"""
+    creator = token_auth.current_user()
+    data = request.get_json()
+    data['creator_id'] = creator.id
+
+    if not data:
+        return bad_request('error: Message body must be JSON')
+    if 'title' not in data or 'location' not in data or 'max_participants' not in data:
+        return bad_request('must include Title, location and max_participants')
+    if 'activity_time' not in data or 'activity_date' not in data:
+        return bad_request('must include activity_time and activity_date (DD/MM/YYYY)')
+    if 'category_id' not in data:
+        return bad_request('Must include category_id. Full list is in populate_activities.py')
+    if 'activity_type_id' not in data:
+        return bad_request('Must include activity_type_id. Full list is in populate_activities.py')
+    if 'activity_date' and 'activity_time' in data:
+        data['activity_date'] = datetime.strptime(data['activity_date'], '%d/%m/%Y')
+        data['activity_time'] = datetime.strptime(data['activity_time'], '%H:%M').time()
+    
+    
+    activity = Activity()
+    activity.from_dict(data, new_activity=True)
+    db.session.add(activity)
+    db.session.commit()
+    return activity.to_dict(), 201, {'Location': url_for('api.create_activity', id=activity.id)}
+
+@bp.route('/edit_activity/<int:id>', methods=['PUT'])
+@token_auth.login_required
+def edit_activity(id):
+    """
+    Updates an activity through the API with the activity id. 
+    """
+    user = db.get_or_404(Activity, id)
+    data = request.get_json()
+    user.from_dict(data, new_activity=False)
+    db.session.commit()
+    return user.to_dict()
 
 # Pulling from the Users table
 @bp.route('/users', methods=['POST'])
