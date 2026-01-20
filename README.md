@@ -58,3 +58,32 @@ python run.py
 
 Click on the link or open your browser and navigate to:
 http://127.0.0.1:5000
+
+### How to make a user admin and test admin functionality:
+#### Step 1: make a user admin
+first start the flask app
+⁠ `flask shell `
+then copy paste the following code
+⁠ `from app.models import Users ⁠`
+⁠ `from app import db ⁠`
+
+`# Replace 'YOUR_USERNAME' with the actual username:`
+⁠ `user = Users.query.filter_by(username='YOUR_USERNAME').first() ⁠`
+⁠ `user.is_admin = True ⁠`
+⁠ `db.session.commit() ⁠`
+⁠ `print(f"{user.username} is_admin: {user.is_admin}”) ⁠`
+
+⁠ `exit() ⁠`
+
+#### Step 2: Get authentication token
+`# Replace YOUR_USERNAME and YOUR_PASSWORD with actual credentials:`
+⁠ `curl -X POST http://localhost:5001/api/tokens -u YOUR_USERNAME:YOUR_PASSWORD ⁠`
+Copy the token from the response
+
+#### Step 3: test admin delete functionality:
+`# Replace YOUR_TOKEN with the actual token from step 2`
+`# Replace USER_ID with the ID of a user you want to delete`
+⁠ `curl -v -X DELETE http://localhost:5001/api/delete-user/USER_ID -H "Authorization: Bearer YOUR_TOKEN” ⁠`
+
+expected response:
+`{"message":"User deleted successfully"}`
