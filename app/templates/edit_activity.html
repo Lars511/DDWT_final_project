@@ -8,15 +8,15 @@
     <select name="category_id" id="category_id" required>
         <option value="">Select a category</option>
         {% for category in categories %}
-            <option value="{{ category.id }}">
+            <option value="{{ category.id }}"
+                {% if category.id == activity.category_id %}selected{% endif %}>
                 {{ category.name }}
             </option>
         {% endfor %}
     </select><br><br>
-
     <label>Activity Type</label><br>
     <select name="activity_type_id" id="activity_type_id" required>
-        <option value="">Select a category first</option>
+        <option value="">Loading activity types...</option>
     </select><br><br>
 
     <label>Title</label><br>
@@ -40,40 +40,57 @@
     <input type="number" name="max_participants"
            value="{{ activity.max_participants }}" min="1"><br><br>
 
-
     <button type="submit">Update Activity</button>
 
 </form>
-<script>
-    // Load activity types when category changes
-    document.getElementById('category_id').addEventListener('change', function() {
-        const categoryId = this.value;
-        const activityTypeSelect = document.getElementById('activity_type_id');
 
-        // Clear current options
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const categorySelect = document.getElementById("category_id");
+    const activityTypeSelect = document.getElementById("activity_type_id");
+
+    const selectedCategoryId = "{{ activity.category_id }}";
+    const selectedActivityTypeId = "{{ activity.activity_type_id }}";
+
+    function loadActivityTypes(categoryId, selectedTypeId = null) {
         activityTypeSelect.innerHTML = '<option value="">Loading...</option>';
 
-        if (categoryId) {
-            // Fetch activity types for this category
-            fetch(`/api/activity-types/${categoryId}`)
-                .then(response => response.json())
-                .then(data => {
-                    activityTypeSelect.innerHTML = '<option value="">Select activity type</option>';
-                    data.forEach(type => {
-                        const option = document.createElement('option');
-                        option.value = type.id;
-                        option.textContent = type.name;
-                        activityTypeSelect.appendChild(option);
-                    });
-                })
-                .catch(error => {
-                    console.error('Error loading activity types:', error);
-                    activityTypeSelect.innerHTML = '<option value="">Error loading types</option>';
+        fetch(`/api/activity-types/${categoryId}`)
+            .then(response => response.json())
+            .then(data => {
+                activityTypeSelect.innerHTML = '<option value="">Select activity type</option>';
+
+                data.forEach(type => {
+                    const option = document.createElement("option");
+                    option.value = type.id;
+                    option.textContent = type.name;
+
+                    if (selectedTypeId && type.id == selectedTypeId) {
+                        option.selected = true;
+                    }
+
+                    activityTypeSelect.appendChild(option);
                 });
+            })
+            .catch(() => {
+                activityTypeSelect.innerHTML = '<option value="">Error loading activity types</option>';
+            });
+    }
+
+    // load activity types immediately on page load
+    if (selectedCategoryId) {
+        loadActivityTypes(selectedCategoryId, selectedActivityTypeId);
+    }
+
+    // reload activity types when category changes
+    categorySelect.addEventListener("change", function () {
+        if (this.value) {
+            loadActivityTypes(this.value);
         } else {
             activityTypeSelect.innerHTML = '<option value="">Select a category first</option>';
         }
     });
+});
 </script>
 
 {% endblock %}
