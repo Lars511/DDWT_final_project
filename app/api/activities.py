@@ -5,6 +5,7 @@ import sqlalchemy as sa
 from flask import request, url_for, abort
 from app.api.errors import bad_request
 from app.api.auth import token_auth
+from app.api.auth_utils import admin_required
 from datetime import datetime
 
 @bp.route('activities/<int:id>',  methods=['GET'])
@@ -20,10 +21,10 @@ def get_activities():
     return Activity.to_collection_dict(sa.select(Activity), page, per_page,
                                    'api.get_activities')
 
-""" 
+"""
 Categories are numbered in the following way:
 1 = sport and fitness
-2 = study and work 
+2 = study and work
 3 = casual and social
 4 = outdoor and leisure
 5 = hobbies and entertainment
@@ -82,8 +83,8 @@ def create_activity():
     if 'activity_date' and 'activity_time' in data:
         data['activity_date'] = datetime.strptime(data['activity_date'], '%d/%m/%Y')
         data['activity_time'] = datetime.strptime(data['activity_time'], '%H:%M').time()
-    
-    
+
+
     activity = Activity()
     activity.from_dict(data, new_activity=True)
     db.session.add(activity)
@@ -94,7 +95,7 @@ def create_activity():
 @token_auth.login_required
 def edit_activity(id):
     """
-    Updates an activity through the API with the activity id. 
+    Updates an activity through the API with the activity id.
     """
     user = db.get_or_404(Activity, id)
     data = request.get_json()
@@ -164,3 +165,23 @@ def get_profile(username):
     if user is None:
         abort(404, description="User not found")
     return user.to_dict()
+
+@bp.route('/delete-user/<int:user_id>', methods=['DELETE'])
+@token_auth.login_required
+@admin_required
+def delete_user(user_id):
+    """Delete a user (admin only)"""
+    user = db.get_or_404(Users, user_id)
+    db.session.delete(user)
+    db.session.commit()
+    return {'message': 'User deleted successfully'}, 200
+
+@bp.route('/delete-activity/<int:activity_id>', methods=['DELETE'])
+@token_auth.login_required
+@admin_required
+def delete_activity(activity_id):
+    """Delete an activity (admin only)"""
+    activity = db.get_or_404(Activity, activity_id)
+    db.session.delete(activity)
+    db.session.commit()
+    return {'message': 'Activity deleted'}, 200

@@ -48,6 +48,8 @@ class Users(UserMixin,PaginatedAPIMixin,  db.Model):
         default=lambda: datetime.now(timezone.utc))
     password_hash = db.Column(db.String(128), nullable=False)
 
+    is_admin = db.Column(db.Boolean, default=False)
+
 
     token: so.Mapped[Optional[str]] = so.mapped_column(
         sa.String(32), index=True, unique=True)
