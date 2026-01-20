@@ -61,29 +61,29 @@ http://127.0.0.1:5000
 
 ### How to make a user admin and test admin functionality:
 #### Step 1: make a user admin
-first start the flask app
-⁠ `flask shell `
-then copy paste the following code
-⁠ `from app.models import Users ⁠`
-⁠ `from app import db ⁠`
+first start the flask app<br />
+⁠`flask shell `<br />
+then copy paste the following code<br />
+⁠`from app.models import Users ⁠`<br />
+⁠`from app import db ⁠`<br />
 
-`# Replace 'YOUR_USERNAME' with the actual username:`
-⁠ `user = Users.query.filter_by(username='YOUR_USERNAME').first() ⁠`
-⁠ `user.is_admin = True ⁠`
-⁠ `db.session.commit() ⁠`
-⁠ `print(f"{user.username} is_admin: {user.is_admin}”) ⁠`
+`# Replace 'YOUR_USERNAME' with the actual username:`<br />
+⁠`user = Users.query.filter_by(username='YOUR_USERNAME').first() ⁠`<br />
+⁠`user.is_admin = True ⁠`<br />
+⁠`db.session.commit() ⁠`<br />
+⁠`print(f"{user.username} is_admin: {user.is_admin}”) ⁠`<br />
+<br />
+⁠`exit() ⁠`<br />
 
-⁠ `exit() ⁠`
+#### Step 2: Get authentication token<br />
+`# Replace YOUR_USERNAME and YOUR_PASSWORD with actual credentials:`<br />
+⁠`curl -X POST http://localhost:5001/api/tokens -u YOUR_USERNAME:YOUR_PASSWORD ⁠`<br />
+Copy the token from the response<br />
 
-#### Step 2: Get authentication token
-`# Replace YOUR_USERNAME and YOUR_PASSWORD with actual credentials:`
-⁠ `curl -X POST http://localhost:5001/api/tokens -u YOUR_USERNAME:YOUR_PASSWORD ⁠`
-Copy the token from the response
-
-#### Step 3: test admin delete functionality:
-`# Replace YOUR_TOKEN with the actual token from step 2`
-`# Replace USER_ID with the ID of a user you want to delete`
-⁠ `curl -v -X DELETE http://localhost:5001/api/delete-user/USER_ID -H "Authorization: Bearer YOUR_TOKEN” ⁠`
-
-expected response:
+#### Step 3: test admin delete functionality:<br />
+`# Replace YOUR_TOKEN with the actual token from step 2`<br />
+`# Replace USER_ID with the ID of a user you want to delete`<br />
+⁠`curl -v -X DELETE http://localhost:5001/api/delete-user/USER_ID -H "Authorization: Bearer YOUR_TOKEN” ⁠`<br />
+<br />
+expected response:<br />
 `{"message":"User deleted successfully"}`
