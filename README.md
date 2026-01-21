@@ -11,15 +11,15 @@ Each activity includes participant management, capacity limits, and user profile
 Follow the steps below to set up and run the project locally.
 
 ### 1 - Clone the repository
-git clone <your-repository-url> <br>
-cd <project-folder>
+`git clone <your-repository-url>` <br>
+`cd <project-folder>`
 
 ### 2 - Create and activate a virtual environment
 Using a virtual environment is strongly recommended to avoid dependency conflicts.
 
-python -m venv .venv <br>
-source .venv/bin/activate        # macOS / Linux <br>
-.venv\Scripts\activate           # Windows
+`python -m venv .venv` <br>
+`source .venv/bin/activate`        # macOS / Linux <br>
+`.venv\Scripts\activate`           # Windows
 
 ### 3 - Install dependencies
 Install all required packages using pip:
@@ -36,9 +36,9 @@ Install all required packages using pip:
 ### 4 - Set environment variables
 Create a .env file in the project root and add the following:
 
-FLASK_APP=app.py <br>
-FLASK_ENV=development <br>
-SECRET_KEY=your-secret-key
+`FLASK_APP=app.py` <br>
+`FLASK_ENV=development` <br>
+`SECRET_KEY=your-secret-key`
 
 Put the .env file at the same level as your app.
 
@@ -47,17 +47,21 @@ The database for this project is already initialized, so you can use that direct
 
 If you intend to initialize a new database, you can use the following:
 
-flask db init <br>
-flask db migrate <br>
-flask db upgrade
+`flask db init` <br>
+`flask db migrate` <br>
+`flask db upgrade`
+
+If the database is reset or recreated, the category and activity type tables will be empty.
+To populate the database with the default categories and associated activity types, run the following script: <br />
+`python populate_activities.py`
+
 
 ### 6 - run the application
 Start the development server, via terminal: <br>
-python run.py
-
+`python run.py`
 
 Click on the link or open your browser and navigate to:
-http://127.0.0.1:5000
+`http://127.0.0.1:5000`
 
 ### How to make a user admin and test admin functionality:
 #### Step 1: make a user admin
