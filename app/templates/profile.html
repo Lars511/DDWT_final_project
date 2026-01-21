@@ -37,7 +37,7 @@
                     <span class="profile-icon">🕒</span>
                 </div>
                 <div class="profile-value">
-                    ↳ {{ user.last_seen }}
+                    ↳ {{ user.last_seen.strftime('%H:%M, %d %b %Y') }}
                 </div>
             </div>
 
