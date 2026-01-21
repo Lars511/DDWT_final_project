@@ -100,7 +100,8 @@ class Users(UserMixin,PaginatedAPIMixin,  db.Model):
             'birthday':self.birthday.isoformat() if self.birthday else None,
             'bio': self.bio,
             'last_seen': self.last_seen.isoformat() if self.last_seen else None,
-            'age': self.age()
+            'age': self.age(),
+            'is_admin': self.is_admin
         }
 
         return data
