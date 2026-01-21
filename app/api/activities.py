@@ -60,8 +60,6 @@ def get_created_activities(name):
     return Activity.to_collection_dict(sa.select(Activity).join(Users).where(Users.username == name), page, per_page,
                                    'api.get_created_activities', name=name)
 
-"""make one here to create and edit activity. Then write a script to prove it works"""
-
 @bp.route('/create_activities', methods=['POST'])
 @token_auth.login_required
 def create_activity():
